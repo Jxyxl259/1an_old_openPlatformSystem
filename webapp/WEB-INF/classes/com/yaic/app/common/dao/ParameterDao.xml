@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.common.dao.ParameterDao">
+    <resultMap id="parameterResultMap" type="com.yaic.app.common.dto.domain.ParameterDto">
+        <id property="parameterId" column="PARAMETER_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="parameterType" column="PARAMETER_TYPE" jdbcType="VARCHAR"></result>
+        <result property="parameterCode" column="PARAMETER_CODE" jdbcType="VARCHAR"></result>
+        <result property="parameterCname" column="PARAMETER_CNAME" jdbcType="VARCHAR"></result>
+        <result property="parameterEname" column="PARAMETER_ENAME" jdbcType="VARCHAR"></result>
+        <result property="parameterTname" column="PARAMETER_TNAME" jdbcType="VARCHAR"></result>
+        <result property="validFlag" column="VALID_FLAG" jdbcType="VARCHAR"></result>
+        <result property="remark" column="REMARK" jdbcType="VARCHAR"></result>
+        <result property="flag" column="FLAG" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <resultMap id="comboResultMap" type="com.yaic.app.common.dto.ComboDto">
+        <result property="parameterCode" column="PARAMETER_CODE" jdbcType="VARCHAR"></result>
+        <result property="parameterName" column="PARAMETER_NAME" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <resultMap id="parameterAcMap" type="com.yaic.app.common.dto.AutoCompleteDto">
+        <id property="value" column="PARAMETER_CODE" jdbcType="VARCHAR"></id>
+        <result property="xxx" column="PARAMETER_NAME" jdbcType="VARCHAR"></result>
+        <result property="yyy" column="PARAMETER_NAME" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    
+     <select id="getComboList" resultMap="comboResultMap" parameterType="java.util.HashMap">
+        SELECT A.PARAMETER_CODE PARAMETER_CODE
+        <if test='localLanguage == "C".toString() '>
+          	, A.PARAMETER_CNAME PARAMETER_NAME
+        </if>
+        <if test='localLanguage == "E".toString() '>
+          	, A.PARAMETER_ENAME PARAMETER_NAME
+        </if>
+        <if test='localLanguage == "T".toString() '>
+          	, A.PARAMETER_TNAME PARAMETER_NAME
+        </if>
+          FROM APP_PARAMETER A WHERE A.VALID_FLAG = '1' and A.PARAMETER_TYPE = #{parameterType} 
+        ORDER BY A.PARAMETER_CODE
+    </select>
+    
+    <select id="getAcDataList" resultMap="parameterAcMap" parameterType="java.util.HashMap">
+        SELECT A.PARAMETER_CODE PARAMETER_CODE
+        <if test='localLanguage == "C".toString() '>
+          	, A.PARAMETER_CNAME PARAMETER_NAME
+        </if>
+        <if test='localLanguage == "E".toString() '>
+          	, A.PARAMETER_ENAME PARAMETER_NAME
+        </if>
+        <if test='localLanguage == "T".toString() '>
+          	, A.PARAMETER_TNAME PARAMETER_NAME
+        </if>
+          FROM APP_PARAMETER A WHERE A.VALID_FLAG = '1' and A.PARAMETER_TYPE = #{parameterType} 
+        ORDER BY A.PARAMETER_CODE
+    </select>
+    
+</mapper>

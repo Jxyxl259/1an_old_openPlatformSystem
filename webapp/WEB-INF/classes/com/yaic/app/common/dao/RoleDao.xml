@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.common.dao.RoleDao">
+    <resultMap id="roleResultMap" type="com.yaic.app.common.dto.domain.RoleDto">
+        <id property="roleId" column="ROLE_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="roleName" column="ROLE_NAME" jdbcType="VARCHAR"></result>
+        <result property="validFlag" column="VALID_FLAG" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <resultMap id="treeNodeMap" type="com.yaic.app.common.dto.TreeNode">
+        <id property="id" column="resource_id" jdbcType="VARCHAR"></id>
+        <result property="level" column="resource_level" jdbcType="VARCHAR"></result>
+        <result property="parentId" column="parent_resource_id" jdbcType="VARCHAR"></result>
+        <result property="text" column="resource_name" jdbcType="VARCHAR"></result>
+        <result property="icon" column="resource_icon_class" jdbcType="VARCHAR"></result>
+        <result property="selected" column="selected" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    
+    <select id="findAllRoles" resultMap="roleResultMap">
+		SELECT ROLE_ID , CREATED_DATE , CREATED_BY , UPDATED_DATE , UPDATED_BY , ROLE_NAME , VALID_FLAG  FROM APP_ROLE t  
+		 ORDER BY T.UPDATED_DATE , T.ROLE_ID 
+	</select>
+	
+    <select id="findAllResourceByRole" resultMap="treeNodeMap" parameterType="java.util.HashMap">
+		SELECT A.RESOURCE_ID,A.RESOURCE_LEVEL,A.PARENT_RESOURCE_ID,A.RESOURCE_NAME,
+			A.RESOURCE_TYPE,A.RESOURCE_ICON_CLASS,
+			CASE WHEN B.ROLE_RESOURCE_ID is NULL THEN 0 ELSE 1 END AS SELECTED
+		FROM APP_RESOURCE A 
+		LEFT JOIN APP_ROLE_RESOURCE B ON A.RESOURCE_ID = B.RESOURCE_ID AND B.ROLE_ID = #{roleId}
+		ORDER BY A.RESOURCE_LEVEL DESC , A.PARENT_RESOURCE_ID , A.RESOURCE_ID
+	</select>
+	
+	<insert id="saveRoleResource" parameterType="java.util.HashMap">
+		INSERT INTO APP_ROLE_RESOURCE (CREATED_BY, UPDATED_BY , ROLE_ID ,RESOURCE_ID) 
+		<foreach collection="resourceIds" index="index" item="item" separator=" union all " >
+           SELECT 
+	           #{userId ,jdbcType= VARCHAR }, 
+	           #{userId ,jdbcType= VARCHAR }, 
+	           #{roleId ,jdbcType= VARCHAR }, 
+	           #{item ,jdbcType= VARCHAR }  
+           FROM DUAL  
+      </foreach>
+	</insert>
+	
+	<update id="updateRoleState"  parameterType="java.util.List">
+		UPDATE APP_ROLE SET  VALID_FLAG='0' WHERE ROLE_ID IN 
+       <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            '${item}'
+       </foreach>
+    </update>
+    
+    <delete id="delRow" parameterType="java.lang.String"> 
+		delete from APP_ROLE where ROLE_ID = #{roleId} 
+	</delete> 
+	
+    <delete id="delRowResource" parameterType="java.lang.String"> 
+    	delete from APP_ROLE_RESOURCE where ROLE_ID = #{roleId} 
+	</delete> 
+	
+	 <select id="getRecordsByConditions" resultMap="roleResultMap" parameterType="java.util.HashMap">
+		SELECT * FROM APP_ROLE T 
+		WHERE 1 = 1
+		<if test="roleId != null" >
+			AND T.ROLE_ID = #{roleId}
+		</if>
+		<if test="validFlag != null" >
+			AND T.VALID_FLAG = #{validFlag}
+		</if>
+		<if test="roleName != null" >
+			AND T.ROLE_NAME LIKE  #{roleName}
+		</if>
+		ORDER BY T.UPDATED_DATE , T.ROLE_ID
+	</select>
+	
+</mapper>

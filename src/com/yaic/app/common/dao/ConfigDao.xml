@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.common.dao.ConfigDao">
+    <resultMap id="configResultMap" type="com.yaic.app.common.dto.domain.ConfigDto">
+        <id property="configId" column="CONFIG_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="configCode" column="CONFIG_CODE" jdbcType="VARCHAR"></result>
+        <result property="configName" column="CONFIG_NAME" jdbcType="VARCHAR"></result>
+        <result property="condition1" column="CONDITION1" jdbcType="VARCHAR"></result>
+        <result property="condition2" column="CONDITION2" jdbcType="VARCHAR"></result>
+        <result property="condition3" column="CONDITION3" jdbcType="VARCHAR"></result>
+        <result property="condition4" column="CONDITION4" jdbcType="VARCHAR"></result>
+        <result property="condition5" column="CONDITION5" jdbcType="VARCHAR"></result>
+        <result property="configValue" column="CONFIG_VALUE" jdbcType="VARCHAR"></result>
+        <result property="validFlag" column="VALID_FLAG" jdbcType="VARCHAR"></result>
+        <result property="remark" column="REMARK" jdbcType="VARCHAR"></result>
+        <result property="flag" column="FLAG" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <select id="getRecordsByConditions" resultMap="configResultMap" parameterType="java.util.HashMap">
+		SELECT * FROM APP_CONFIG T 
+		WHERE 1 = 1
+		<if test="configCode != null" >
+			AND T.CONFIG_CODE = #{configCode}
+		</if>
+		<if test="configValue != null" >
+			AND T.CONFIG_VALUE = #{configValue}
+		</if>
+		<if test="validFlag != null" >
+			AND T.VALID_FLAG = #{validFlag}
+		</if>
+		<if test="configName != null" >
+			AND T.CONFIG_NAME LIKE  #{configName}
+		</if>
+		ORDER BY T.UPDATED_DATE , T.CONFIG_ID
+	</select>
+</mapper>

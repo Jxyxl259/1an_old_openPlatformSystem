@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.yaic.app.auth.dao.OauthServiceLogDao">
+
+	<resultMap id="oauthServiceLogResultMap" type="com.yaic.app.auth.dto.domain.OauthServiceLogDto">
+        <id property="id" column="ID" jdbcType="INTEGER"></id>
+        <result property="appId" column="APP_ID" jdbcType="VARCHAR"></result>
+        <result property="token" column="TOKEN" jdbcType="LONGVARBINARY"></result>
+        <result property="resourceId" column="RESOURCE_ID" jdbcType="INTEGER"></result>
+        <result property="reqContent" column="REQ_CONTENT" jdbcType="LONGVARCHAR"></result>
+        <result property="respContent" column="RESP_CONTENT" jdbcType="LONGVARCHAR"></result>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+	</resultMap>
+	
+	<delete id="clearDbLog"> 
+		DELETE
+          FROM
+          	t_sns_oauth_service_log
+          WHERE
+         	<![CDATA[
+          	created_date < date_sub(NOW(), INTERVAL 1 MONTH)
+          	]]>
+	</delete> 
+
+</mapper>
+

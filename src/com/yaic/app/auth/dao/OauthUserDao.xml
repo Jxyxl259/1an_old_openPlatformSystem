@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.yaic.app.auth.dao.OauthUserDao">
+
+	<resultMap id="oauthUserResultMap" type="com.yaic.app.auth.dto.domain.OauthUserDto">
+        <id property="appId" column="APP_ID" jdbcType="VARCHAR"></id>
+        <result property="appSecret" column="APP_SECRET" jdbcType="VARCHAR"></result>
+        <result property="openId" column="OPEN_ID" jdbcType="BIGINT"></result>
+        <result property="userName" column="USER_NAME" jdbcType="VARCHAR"></result>
+        <result property="phoneNumber" column="PHONE_NUMBER" jdbcType="VARCHAR"></result>
+        <result property="createdUser" column="CREATED_USER" jdbcType="VARCHAR"></result>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedUser" column="UPDATED_USER" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="invalidFlag" column="INVALID_FLAG" jdbcType="BIT"></result>
+	</resultMap>
+
+</mapper>
+

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.quartz.dao.JobDao">
+    <resultMap id="jobResultMap" type="com.yaic.app.quartz.dto.domain.JobDto">
+        <id property="jobId" column="JOB_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="jobName" column="JOB_NAME" jdbcType="VARCHAR"></result>
+        <result property="jobGroupName" column="JOB_GROUP_NAME" jdbcType="VARCHAR"></result>
+        <result property="jobStatus" column="JOB_STATUS" jdbcType="VARCHAR"></result>
+        <result property="cronExpression" column="CRON_EXPRESSION" jdbcType="VARCHAR"></result>
+        <result property="jobClass" column="JOB_CLASS" jdbcType="VARCHAR"></result>
+        <result property="springId" column="SPRING_ID" jdbcType="VARCHAR"></result>
+        <result property="methodName" column="METHOD_NAME" jdbcType="VARCHAR"></result>
+        <result property="restfulUrl" column="RESTFUL_URL" jdbcType="VARCHAR"></result>
+        <result property="remark" column="REMARK" jdbcType="VARCHAR"></result>
+        <result property="flag" column="FLAG" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <select id="findByCondition" resultMap="jobResultMap" parameterType="java.util.HashMap">
+		SELECT * 
+		   FROM APP_JOB A 
+		WHERE 1=1 
+		<if test="jobName != null">
+		   AND A.JOB_NAME LIKE #{jobName}
+		</if>
+		<if test="jobGroupName != null">
+		   AND A.JOB_GROUP_NAME LIKE #{jobGroupName}
+		</if>
+		<if test="jobStatus != null">
+		   AND A.JOB_STATUS = #{jobStatus}
+		</if>
+		ORDER BY A.UPDATED_DATE,A.JOB_GROUP_NAME
+	</select>
+</mapper>

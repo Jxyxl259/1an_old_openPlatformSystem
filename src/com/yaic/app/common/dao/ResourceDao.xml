@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.common.dao.ResourceDao">
+    <resultMap id="resourceResultMap" type="com.yaic.app.common.dto.domain.ResourceDto">
+        <id property="resourceId" column="RESOURCE_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="resourceName" column="RESOURCE_NAME" jdbcType="VARCHAR"></result>
+        <result property="resourceType" column="RESOURCE_TYPE" jdbcType="VARCHAR"></result>
+        <result property="resourceLevel" column="RESOURCE_LEVEL" jdbcType="NUMERIC"></result>
+        <result property="parentResourceId" column="PARENT_RESOURCE_ID" jdbcType="VARCHAR"></result>
+        <result property="resourceIconClass" column="RESOURCE_ICON_CLASS" jdbcType="VARCHAR"></result>
+        <result property="actionUrl" column="ACTION_URL" jdbcType="VARCHAR"></result>
+        <result property="endFlag" column="END_FLAG" jdbcType="VARCHAR"></result>
+        <result property="displayOrder" column="DISPLAY_ORDER" jdbcType="INTEGER"></result>
+    </resultMap>
+    
+    <resultMap id="treeNodeMap" type="com.yaic.app.common.dto.TreeNode">
+        <result property="id" column="resource_id" jdbcType="VARCHAR"></result>
+        <result property="level" column="resource_level" jdbcType="VARCHAR"></result>
+        <result property="parentId" column="parent_resource_id" jdbcType="VARCHAR"></result>
+        <result property="text" column="resource_name" jdbcType="VARCHAR"></result>
+        <result property="icon" column="resource_icon_class" jdbcType="VARCHAR"></result>
+        <result property="type" column="resource_type" jdbcType="VARCHAR"></result>
+        <result property="actionUrl" column="action_url" jdbcType="VARCHAR"></result>
+        <result property="endFlag" column="end_flag" jdbcType="VARCHAR"></result>
+        <result property="displayOrder" column="display_order" jdbcType="INTEGER"></result>
+        <result property="opened" column="opened" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <select id="getResource" resultMap="resourceResultMap" parameterType="java.util.HashMap">
+		SELECT *
+		  FROM APP_RESOURCE A
+		 WHERE A.RESOURCE_ID IN (SELECT C.RESOURCE_ID
+		                           FROM APP_USER_ROLE B, APP_ROLE_RESOURCE C, APP_ROLE E
+		                          WHERE B.ROLE_ID = C.ROLE_ID
+		                            AND B.ROLE_ID = E.ROLE_ID
+		                            AND E.VALID_FLAG = '1'
+		                            AND B.USER_ID = #{userId})
+		   AND NOT EXISTS (SELECT 1
+					         FROM APP_USER_EXCLUDE_RESOURCE D
+					        WHERE D.USER_ID = #{userId}
+					          AND D.RESOURCE_ID = A.RESOURCE_ID)
+		<if test="resourceId != null">
+		   AND A.RESOURCE_ID = #{resourceId}
+		</if>
+		<if test="resourceType != null">
+		   AND A.RESOURCE_TYPE = #{resourceType}
+		</if>
+		<if test="actionUrl != null">
+		   AND A.ACTION_URL = #{actionUrl}
+		</if>
+		 ORDER BY A.PARENT_RESOURCE_ID, A.RESOURCE_ID
+	</select>
+	
+	<select id="findAllMenuResource" resultMap="treeNodeMap">
+	     SELECT A.RESOURCE_ID,A.RESOURCE_NAME,A.RESOURCE_TYPE,A.RESOURCE_LEVEL,A.PARENT_RESOURCE_ID,A.PARENT_RESOURCE_ID,A.RESOURCE_ICON_CLASS,A.END_FLAG,A.ACTION_URL,A.DISPLAY_ORDER,
+	     CASE WHEN A.RESOURCE_LEVEL = 1 THEN 1 ELSE 0 END AS OPENED
+	       FROM APP_RESOURCE A
+	     WHERE A.RESOURCE_TYPE != 'service'
+	       ORDER BY A.RESOURCE_LEVEL DESC ,A.DISPLAY_ORDER, A.PARENT_RESOURCE_ID ,  A.RESOURCE_ID
+	</select>
+	
+    <select id="findAllServiceResource" resultMap="treeNodeMap">
+         SELECT A.RESOURCE_ID ,A.RESOURCE_NAME,A.RESOURCE_TYPE,A.RESOURCE_LEVEL,A.PARENT_RESOURCE_ID,A.PARENT_RESOURCE_ID,A.RESOURCE_ICON_CLASS,A.END_FLAG,A.ACTION_URL,A.DISPLAY_ORDER,
+         CASE WHEN A.RESOURCE_LEVEL = 1 THEN 1 WHEN A.RESOURCE_LEVEL = '2' THEN 1 ELSE 0 END AS OPENED
+           FROM APP_RESOURCE A
+         WHERE A.RESOURCE_TYPE = 'service'
+           ORDER BY A.RESOURCE_LEVEL DESC ,A.DISPLAY_ORDER , A.PARENT_RESOURCE_ID,  A.RESOURCE_ID
+	</select>
+	
+	<select id="findMaxResourceId" resultMap="resourceResultMap">
+        SELECT MAX(A.RESOURCE_ID)  AS RESOURCE_ID 
+          FROM APP_RESOURCE A 
+        WHERE A.RESOURCE_ID !='9999'
+	</select>
+	
+</mapper>

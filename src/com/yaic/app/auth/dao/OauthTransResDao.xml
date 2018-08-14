@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.yaic.app.auth.dao.OauthTransResDao">
+
+	<resultMap id="oauthTransResResultMap" type="com.yaic.app.auth.dto.domain.OauthTransResDto">
+        <id property="id" column="ID" jdbcType="INTEGER"></id>
+        <result property="requestUrl" column="REQUEST_URL" jdbcType="VARCHAR"></result>
+        <result property="transUrl" column="TRANS_URL" jdbcType="VARCHAR"></result>
+        <result property="encodingType" column="ENCODING_TYPE" jdbcType="VARCHAR"></result>
+        <result property="isAuth" column="IS_AUTH" jdbcType="BIT"></result>
+        <result property="createdUser" column="CREATED_USER" jdbcType="VARCHAR"></result>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedUser" column="UPDATED_USER" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="invalidFlag" column="INVALID_FLAG" jdbcType="BIT"></result>
+	</resultMap>
+	
+	<select id="findResourceInfo" parameterType="com.yaic.app.auth.dto.domain.OauthTransResDto" 
+			resultType="com.yaic.app.auth.dto.domain.OauthTransResDto">
+		SELECT
+        	a1.app_id as appId,
+	        a2.request_url as requestUrl,
+	        a2.interface_name as interfaceName,
+	        a2.remark as remark
+        FROM
+        	t_sns_oauth_resource a1,
+        	t_sns_oauth_trans_res a2
+		<where>
+			a1.resource_id = a2.id
+			<if test="appId != null">
+				and a1.app_id = #{appId}
+			</if>
+			<if test="invalidFlag != null">
+				and a1.invalid_flag = #{invalidFlag}
+				and a2.invalid_flag = #{invalidFlag}
+			</if>
+		</where>
+		ORDER BY
+        	a1.updated_date DESC
+	</select>
+
+</mapper>
+

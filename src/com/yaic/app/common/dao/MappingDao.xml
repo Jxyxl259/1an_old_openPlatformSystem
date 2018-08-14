@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.common.dao.MappingDao">
+    <resultMap id="mappingResultMap" type="com.yaic.app.common.dto.domain.MappingDto">
+        <id property="mappingId" column="MAPPING_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="mappingType" column="MAPPING_TYPE" jdbcType="VARCHAR"></result>
+        <result property="mappingName" column="MAPPING_NAME" jdbcType="VARCHAR"></result>
+        <result property="mappingFrom" column="MAPPING_FROM" jdbcType="VARCHAR"></result>
+        <result property="mappingTo" column="MAPPING_TO" jdbcType="VARCHAR"></result>
+        <result property="validFlag" column="VALID_FLAG" jdbcType="VARCHAR"></result>
+        <result property="remark" column="REMARK" jdbcType="VARCHAR"></result>
+        <result property="flag" column="FLAG" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <select id="findByMappingName" resultMap="mappingResultMap" parameterType="java.util.HashMap">
+		SELECT * 
+		   FROM APP_MAPPING A 
+		WHERE 1=1 
+		<if test="mappingType != null">
+		   AND A.MAPPING_TYPE LIKE '%'||#{mappingType}||'%'
+		</if>
+		<if test="mappingName != null">
+		   AND A.MAPPING_NAME LIKE '%'||#{mappingName}||'%'
+		</if>
+		<if test="mappingFrom != null">
+		   AND A.MAPPING_FROM LIKE '%'||#{mappingFrom}||'%'
+		</if>
+		<if test="mappingTo != null">
+		   AND A.MAPPING_TO LIKE '%'||#{mappingTo}||'%'
+		</if>
+		<if test="validFlag != null">
+		   AND A.VALID_FLAG = #{validFlag}
+		</if>
+		
+		ORDER BY A.UPDATED_DATE,A.MAPPING_NAME
+	</select>
+</mapper>

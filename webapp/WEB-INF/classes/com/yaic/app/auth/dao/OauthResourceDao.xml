@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.yaic.app.auth.dao.OauthResourceDao">
+
+	<resultMap id="oauthResourceResultMap" type="com.yaic.app.auth.dto.domain.OauthResourceDto">
+        <id property="id" column="ID" jdbcType="INTEGER"></id>
+        <result property="appId" column="APP_ID" jdbcType="VARCHAR"></result>
+        <result property="resourceUrl" column="RESOURCE_URL" jdbcType="VARCHAR"></result>
+        <result property="createdUser" column="CREATED_USER" jdbcType="VARCHAR"></result>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedUser" column="UPDATED_USER" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="invalidFlag" column="INVALID_FLAG" jdbcType="BIT"></result>
+	</resultMap>
+	
+	
+	<select id="findResourceInfo" parameterType="com.yaic.app.auth.dto.domain.OauthResourceDto" 
+			resultType="com.yaic.app.auth.dto.domain.OauthResourceDto">
+		SELECT
+        	a1.id AS id,
+        	a1.app_id AS appId,
+        	a1.resource_id AS resourceId,
+        	a1.invalid_flag AS invalidFlag,
+        	a1.created_user AS createdUser,
+        	a1.created_date AS createdDate,
+        	a1.updated_user AS updatedUser,
+        	a1.updated_date AS updatedDate,
+        	a2.request_url AS requestUrl,
+        	a2.interface_name AS interfaceName,
+        	a2.org_id AS orgId,
+        	a2.agrt_code AS agrtCode
+        FROM
+        	t_sns_oauth_resource a1,
+        	t_sns_oauth_trans_res a2
+		<where>
+			a1.resource_id = a2.id
+			<if test="appId != null">
+				and a1.app_id = #{appId}
+			</if>
+			<if test="invalidFlag != null">
+				and a1.invalid_flag = #{invalidFlag}
+				and a2.invalid_flag = #{invalidFlag}
+			</if>
+		</where>
+		ORDER BY
+        	a1.updated_date DESC
+	</select>
+
+</mapper>
+

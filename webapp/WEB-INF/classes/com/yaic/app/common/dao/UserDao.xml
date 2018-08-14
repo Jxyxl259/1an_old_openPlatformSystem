@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.common.dao.UserDao">
+    <resultMap id="userResultMap" type="com.yaic.app.common.dto.domain.UserDto">
+        <id property="userId" column="USER_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="userCode" column="USER_CODE" jdbcType="VARCHAR"></result>
+        <result property="userCname" column="USER_CNAME" jdbcType="VARCHAR"></result>
+        <result property="userTname" column="USER_TNAME" jdbcType="VARCHAR"></result>
+        <result property="userEname" column="USER_ENAME" jdbcType="VARCHAR"></result>
+        <result property="password" column="PASSWORD" jdbcType="VARCHAR"></result>
+        <result property="seal" column="SEAL" jdbcType="VARCHAR"></result>
+        <result property="passwordSetDate" column="PASSWORD_SET_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="passwordExpireDate" column="PASSWORD_EXPIRE_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="companyCode" column="COMPANY_CODE" jdbcType="VARCHAR"></result>
+        <result property="phone" column="PHONE" jdbcType="VARCHAR"></result>
+        <result property="mobile" column="MOBILE" jdbcType="VARCHAR"></result>
+        <result property="address" column="ADDRESS" jdbcType="VARCHAR"></result>
+        <result property="postCode" column="POST_CODE" jdbcType="VARCHAR"></result>
+        <result property="email" column="EMAIL" jdbcType="VARCHAR"></result>
+        <result property="validFlag" column="VALID_FLAG" jdbcType="VARCHAR"></result>
+        <result property="remark" column="REMARK" jdbcType="VARCHAR"></result>
+        <result property="flag" column="FLAG" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+      <update id="updatePassword"  parameterType="java.util.Map">
+		 UPDATE  APP_USER A SET A.PASSWORD = #{password} WHERE A.USER_CODE =  #{userCode}
+	 </update>
+</mapper>

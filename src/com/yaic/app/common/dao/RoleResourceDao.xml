@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.common.dao.RoleResourceDao">
+    <resultMap id="roleResourceResultMap" type="com.yaic.app.common.dto.domain.RoleResourceDto">
+        <id property="roleResourceId" column="ROLE_RESOURCE_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="roleId" column="ROLE_ID" jdbcType="VARCHAR"></result>
+        <result property="resourceId" column="RESOURCE_ID" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <select id="findUserResources" resultMap="roleResourceResultMap" parameterType="java.lang.String" >
+	    SELECT B.ACTION_URL RESOURCE_ID
+		  FROM APP_ROLE_RESOURCE A, APP_RESOURCE B
+		 WHERE A.RESOURCE_ID = B.RESOURCE_ID
+		   AND A.ROLE_ID IN (SELECT C.ROLE_ID
+		                       FROM APP_USER_ROLE C, APP_USER D
+		                      WHERE C.USER_ID = D.USER_CODE
+		                        AND D.VALID_FLAG = '1'
+		                        AND C.USER_ID = #{userCode})
+		   AND NOT EXISTS (SELECT 1
+					         FROM APP_USER_EXCLUDE_RESOURCE E
+					        WHERE E.USER_ID = #{userCode}
+					          AND E.RESOURCE_ID = A.RESOURCE_ID)
+   </select>
+</mapper>

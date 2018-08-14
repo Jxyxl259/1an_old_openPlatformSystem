@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.common.dao.ParameterTypeDao">
+    <resultMap id="parameterTypeResultMap" type="com.yaic.app.common.dto.domain.ParameterTypeDto">
+        <id property="parameterTypeId" column="PARAMETER_TYPE_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="parameterType" column="PARAMETER_TYPE" jdbcType="VARCHAR"></result>
+        <result property="parameterTypeCname" column="PARAMETER_TYPE_CNAME" jdbcType="VARCHAR"></result>
+        <result property="parameterTypeEname" column="PARAMETER_TYPE_ENAME" jdbcType="VARCHAR"></result>
+        <result property="parameterTypeTname" column="PARAMETER_TYPE_TNAME" jdbcType="VARCHAR"></result>
+        <result property="validFlag" column="VALID_FLAG" jdbcType="VARCHAR"></result>
+        <result property="remark" column="REMARK" jdbcType="VARCHAR"></result>
+        <result property="flag" column="FLAG" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <resultMap id="parameterTypeAcMap" type="com.yaic.app.common.dto.AutoCompleteDto">
+        <id property="value" column="PARAMETER_TYPE" jdbcType="VARCHAR"></id>
+        <result property="xxx" column="PARAMETER_NAME" jdbcType="VARCHAR"></result>
+        <result property="yyy" column="PARAMETER_NAME" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+     <select id="getRecordsByType" resultMap="parameterTypeResultMap" parameterType="java.util.HashMap">
+		SELECT * FROM APP_PARAMETER_TYPE T 
+		WHERE 1 = 1
+		<if test="parameterType != null" >
+			AND T.PARAMETER_TYPE = #{parameterType}
+		</if>
+		<if test="validFlag != null" >
+			AND T.VALID_FLAG = #{validFlag}
+		</if>
+		<if test="parameterCname != null" >
+			AND T.PARAMETER_TYPE_CNAME LIKE #{parameterCname}
+		</if>
+		<if test="parameterEname != null" >
+			AND T.PARAMETER_TYPE_ENAME LIKE #{parameterEname}
+		</if>
+		<if test="parameterTname != null" >
+			AND T.PARAMETER_TYPE_TNAME LIKE  #{parameterTname}
+		</if>
+		ORDER BY T.UPDATED_DATE , T.PARAMETER_TYPE_ID
+	</select>
+	
+	<select id="getAcDataList" resultMap="parameterTypeAcMap" parameterType="java.util.HashMap">
+        SELECT A.PARAMETER_TYPE PARAMETER_TYPE
+        <if test='localLanguage == "C".toString() '>
+          	, A.PARAMETER_TYPE_CNAME PARAMETER_NAME
+        </if>
+        <if test='localLanguage == "E".toString() '>
+          	, A.PARAMETER_TYPE_ENAME PARAMETER_NAME
+        </if>
+        <if test='localLanguage == "T".toString() '>
+          	, A.PARAMETER_TYPE_TNAME PARAMETER_NAME
+        </if>
+          FROM APP_PARAMETER_TYPE A 
+        ORDER BY A.PARAMETER_TYPE_ID
+    </select>
+    
+    
+</mapper>

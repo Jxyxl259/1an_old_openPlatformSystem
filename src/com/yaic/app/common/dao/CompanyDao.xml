@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yaic.app.common.dao.CompanyDao">
+    <resultMap id="companyResultMap" type="com.yaic.app.common.dto.domain.CompanyDto">
+        <id property="companyId" column="COMPANY_ID" jdbcType="VARCHAR"></id>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"></result>
+        <result property="companyCname" column="COMPANY_CNAME" jdbcType="VARCHAR"></result>
+        <result property="companyEname" column="COMPANY_ENAME" jdbcType="VARCHAR"></result>
+        <result property="companyTname" column="COMPANY_TNAME" jdbcType="VARCHAR"></result>
+        <result property="companyLevel" column="COMPANY_LEVEL" jdbcType="NUMERIC"></result>
+        <result property="parentCompanyId" column="PARENT_COMPANY_ID" jdbcType="VARCHAR"></result>
+        <result property="validFlag" column="VALID_FLAG" jdbcType="VARCHAR"></result>
+        <result property="remark" column="REMARK" jdbcType="VARCHAR"></result>
+        <result property="flag" column="FLAG" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <resultMap id="comboResultMap" type="com.yaic.app.common.dto.ComboDto">
+        <result property="parameterCode" column="COMPANY_ID" jdbcType="VARCHAR"></result>
+        <result property="parameterName" column="COMPANY_NAME" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <resultMap id="companyAcMap" type="com.yaic.app.common.dto.AutoCompleteDto">
+        <id property="value" column="COMPANY_ID" jdbcType="VARCHAR"></id>
+        <result property="xxx" column="COMPANY_ID" jdbcType="VARCHAR"></result>
+        <result property="yyy" column="COMPANY_NAME" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <resultMap  id="treeNodeMap" type="com.yaic.app.common.dto.TreeNode">
+        <id property="id" column="company_id" jdbcType="VARCHAR"></id>
+        <result property="level" column="company_level" jdbcType="VARCHAR"></result>
+        <result property="parentId" column="parent_company_id" jdbcType="VARCHAR"></result>
+        <result property="companyCname" column="company_cname" jdbcType="VARCHAR"></result>
+        <result property="companyEname" column="company_ename" jdbcType="VARCHAR"></result>
+        <result property="companyTname" column="company_tname" jdbcType="VARCHAR"></result>
+        <result property="validFlag" column="valid_flag" jdbcType="VARCHAR"></result>
+        <result property="remark" column="remark" jdbcType="VARCHAR"></result>
+        <result property="flag" column="flag" jdbcType="VARCHAR"></result>
+        <result property="opened" column="opened" jdbcType="VARCHAR"></result>
+    </resultMap>
+    
+    <select id="findAllCompany" resultMap="treeNodeMap">
+        SELECT A.COMPANY_ID,A.COMPANY_CNAME,A.COMPANY_ENAME,A.COMPANY_TNAME,A.COMPANY_LEVEL,A.PARENT_COMPANY_ID,A.VALID_FLAG,A.REMARK,A.FLAG,
+        CASE WHEN A.COMPANY_LEVEL = 1 THEN 1 ELSE 0 END AS OPENED
+          FROM APP_COMPANY A
+        ORDER BY A.COMPANY_LEVEL DESC , A.PARENT_COMPANY_ID , A.COMPANY_ID
+    </select>
+    
+    <select id="getAcDataList" resultMap="companyAcMap" parameterType="java.lang.String">
+        SELECT A.COMPANY_ID COMPANY_ID
+        <if test='_parameter == "C".toString() '>
+          	, A.COMPANY_CNAME COMPANY_NAME
+        </if>
+        <if test='_parameter == "E".toString() '>
+          	, A.COMPANY_ENAME COMPANY_NAME
+        </if>
+        <if test='_parameter == "T".toString() '>
+          	, A.COMPANY_TNAME COMPANY_NAME
+        </if>
+          FROM APP_COMPANY A where a.VALID_FLAG = '1'
+        ORDER BY A.COMPANY_LEVEL , A.PARENT_COMPANY_ID , A.COMPANY_ID
+    </select>
+    
+    <select id="getCombDataList" resultMap="comboResultMap" parameterType="java.util.HashMap">
+        SELECT A.COMPANY_ID COMPANY_ID
+        <if test='localLanguage == "C".toString() '>
+          	, A.COMPANY_CNAME COMPANY_NAME
+        </if>
+        <if test='localLanguage == "E".toString() '>
+          	, A.COMPANY_ENAME COMPANY_NAME
+        </if>
+        <if test='localLanguage == "T".toString() '>
+          	, A.COMPANY_TNAME COMPANY_NAME
+        </if>
+          FROM APP_COMPANY A where A.VALID_FLAG = '1'
+        ORDER BY A.COMPANY_LEVEL , A.PARENT_COMPANY_ID , A.COMPANY_ID
+    </select>
+    
+    <select id="findMaxCompanyId" resultMap="companyResultMap">
+       SELECT  MAX(A.COMPANY_ID) AS COMPANY_ID  
+         FROM APP_COMPANY A 
+    </select>
+    
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.yaic.app.notice.dao.SnsNoticeInfoDao">
+
+	<resultMap id="snsNoticeInfoResultMap" type="com.yaic.app.notice.dto.domain.SnsNoticeInfoDto">
+        <id property="id" column="ID" jdbcType="INTEGER"></id>
+        <result property="appId" column="APP_ID" jdbcType="VARCHAR"></result>
+        <result property="noticeUrl" column="NOTICE_URL" jdbcType="LONGVARCHAR"></result>
+        <result property="content" column="CONTENT" jdbcType="LONGVARCHAR"></result>
+        <result property="businessNo" column="BUSINESS_NO" jdbcType="VARCHAR"></result>
+        <result property="dealType" column="DEAL_TYPE" jdbcType="VARCHAR"></result>
+        <result property="retryPolicy" column="RETRY_POLICY" jdbcType="BIT"></result>
+        <result property="dealStatus" column="DEAL_STATUS" jdbcType="BIT"></result>
+        <result property="dealCount" column="DEAL_COUNT" jdbcType="INTEGER"></result>
+        <result property="createdUser" column="CREATED_USER" jdbcType="VARCHAR"></result>
+        <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="updatedUser" column="UPDATED_USER" jdbcType="VARCHAR"></result>
+        <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"></result>
+        <result property="invalidFlag" column="INVALID_FLAG" jdbcType="BIT"></result>
+	</resultMap>
+
+	<select id="queryNoticeInfo" parameterType="com.yaic.app.notice.dto.domain.SnsNoticeInfoDto"
+		resultType="com.yaic.app.notice.dto.domain.SnsNoticeInfoDto">
+		SELECT
+		    g.id id,
+			g.app_id appId,
+			g.content content,
+			g.deal_count dealCount,
+			g.notice_url noticeUrl,
+			g.encoding_type encodingType,
+			g.request_type requestType,
+			g.is_pair isPair
+		FROM
+			t_sns_notice_info g
+		WHERE
+			g.invalid_flag = 0
+		AND g.retry_policy = 0
+			<![CDATA[
+		AND g.deal_status <> 1
+		AND g.deal_count <= #{dealCount}
+			]]>
+		ORDER BY
+			g.created_date
+		LIMIT #{limitCount}
+	</select>
+
+</mapper>
+

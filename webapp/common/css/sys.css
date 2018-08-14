@@ -1,0 +1,59 @@
+.multi-iframe-container>.nav-tabs>li>a{
+    background-color: #ECECEC;
+    border-top: 1px solid #E1E1E1;
+    border-left: 1px solid #E1E1E1;
+    border-right: 1px solid #B7B7C5;
+}
+.multi-iframe-container>.nav-tabs>li.active>a{
+    background-color: #F1F1F1;
+    border-bottom: 1px solid #F1F1F1;
+}
+.multi-iframe-container>.tab-content{
+	padding: 0px;
+}
+.multi-iframe-container>.nav>li>a {
+    padding: 6px 15px 5px 5px
+}
+.multi-iframe-container>.nav-tabs {
+    height: 31px;
+}
+.content-wrapper{
+	padding-top:1px;
+}
+.multi-iframe-container>.nav-tabs>li>span.tab-close {
+	float: right;
+    margin-top: -32px;
+    margin-right: 6px;
+    font-size: .8em;
+    cursor: pointer;
+}
+.top-bar .logo .system-name{
+  display:inline;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding-left: 12px;
+}
+a:focus {
+  outline-style: none; 
+  -moz-outline-style: none;
+  outline: none; 
+}
+@media screen and (min-width:0\0) {
+  .multi-iframe-container>.nav-tabs {
+    height: 32px;
+  }
+}
+.ie11>.multi-iframe-container>.nav-tabs {
+  height: 32px;
+}
+.multi-iframe-container>.nav-tabs>li.active>span.tab-close {
+	color: #5E6868;
+}
+.multi-iframe-container>.nav-tabs>li>span.tab-close:hover{
+	font-size: 1em;
+}
+.multi-iframe-container>.nav-tabs>li.active>span.tab-close:hover{
+	color: #000;
+	font-size: 1em;
+}
